@@ -97,4 +97,31 @@ router.put('/user', async (req, res) => {
     }
 });
 
+/**
+ * Add coins for a User from email_id
+ */
+router.put('/user/:email', async (req, res) => {
+    console.log('PUT /api/user/:email API call made');
+
+    const { coins } = req.body;
+    if(!req.params.email) {
+        return res.status(400).json({ message: 'Email must be provide' });
+    }
+
+    try {
+        const connection = await DbUtils.getConnection();
+        const exists = await connection.manager.findOne(User, { where: { email_id: req.params.email } });
+        if(!exists) {
+            return res.status(409).json({ message: 'The Email is not registered with us, please try another'});
+        }
+
+        exists.coins += coins;
+        await connection.manager.save(exists);
+        res.status(200).json({ message: 'User coins updated successfully' });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+});
+
 module.exports = router;

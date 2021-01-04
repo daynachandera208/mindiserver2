@@ -252,22 +252,27 @@ export class GameRoom extends Room<GameState> {
             return;
         }
 
-        console.log(`Other players didn't join, creating ${this.maxClients - this.playerCount} bots to start game`)
-        if(this.playerCount < this.maxClients) {
-            this.lock();
-            let actualPlayerCount: number = this.playerCount;
-            for(let i = 0; i < this.maxClients - actualPlayerCount; i++) {
-                let botSessionId: string = this.botUtils.makeId(9);
-                this.addPlayer(botSessionId, `Bot${this.playerCount}`);
-                this.playerCount += 1;
+        if(this.maxClients - this.playerCount <= 2) {
+            console.log(`Other players didn't join, creating ${this.maxClients - this.playerCount} bots to start game`)
+            if(this.playerCount < this.maxClients) {
+                this.lock();
+                let actualPlayerCount: number = this.playerCount;
+                for(let i = 0; i < this.maxClients - actualPlayerCount; i++) {
+                    let botSessionId: string = this.botUtils.makeId(9);
+                    this.addPlayer(botSessionId, `Bot${this.playerCount}`);
+                    this.playerCount += 1;
 
-                if(this.state.teamA.players[botSessionId]) {
-                    this.botUtils.addBot(botSessionId, this.state.teamA.players[botSessionId]);
-                }
-                else {
-                    this.botUtils.addBot(botSessionId, this.state.teamB.players[botSessionId]);
+                    if(this.state.teamA.players[botSessionId]) {
+                        this.botUtils.addBot(botSessionId, this.state.teamA.players[botSessionId]);
+                    }
+                    else {
+                        this.botUtils.addBot(botSessionId, this.state.teamB.players[botSessionId]);
+                    }
                 }
             }
+        }
+        else {
+            this.broadcast(`noPlayers`, `Players are not available`);
         }
     }
 

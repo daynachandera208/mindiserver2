@@ -2,9 +2,9 @@
    "type": "mysql",
    "host": "localhost",
    "port": 3306,
-   "username": "<user-name>",
-   "password": "<password>",
-   "database": "<db>",
+   "username": "root",
+   "password": "infozium",
+   "database": "Paritosh",
    "synchronize": true,
    "logging": false,
    "entities": [
